@@ -1,1 +1,45 @@
-Login Works
+<div class="login-wrapper">
+  <form clrForm class="login" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <section class="title">
+      <h3 class="welcome">{{ 'login.welcomeTo' | translate }}</h3>
+      {{ 'global.appName' | translate }}
+      <h5 class="hint">{{ 'login.loginHint' | translate }}</h5>
+    </section>
+    <div class="login-group">
+      <clr-input-container>
+        <label class="clr-sr-only">{{ 'login.username' | translate }}</label>
+        <input
+          type="text"
+          name="username"
+          clrInput
+          [placeholder]="'login.username' | translate"
+          formControlName="username"
+          class="clr-col-12 clr-col-md-12"
+        />
+        <clr-control-error>{{ 'login.thisFieldIsRequired' | translate }}</clr-control-error>
+      </clr-input-container>
+      <clr-password-container>
+        <label class="clr-sr-only">{{ 'login.password' | translate }}</label>
+        <input
+          type="password"
+          name="password"
+          clrPassword
+          [placeholder]="'login.password' | translate"
+          formControlName="password"
+          class="clr-col-12 clr-col-md-12"
+        />
+        <clr-control-error>{{ 'login.thisFieldIsRequired' | translate }}</clr-control-error>
+      </clr-password-container>
+
+      <div class="error active" [ngClass]="{ active: isError }">
+        {{ 'login.invalidUsernameOrPassword' | translate }}
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <ng-container [ngSwitch]="isLoading">
+          <span *ngSwitchCase="false">{{ 'login.login' | translate }}</span>
+          <span *ngSwitchCase="true" class="spinner spinner-inline spinner-inverse"></span>
+        </ng-container>
+      </button>
+    </div>
+  </form>
+</div>

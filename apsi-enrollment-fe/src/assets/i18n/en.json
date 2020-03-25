@@ -1,0 +1,14 @@
+{
+  "global": {
+    "appName": "APSI Enrollment"
+  },
+  "login": {
+    "welcomeTo": "Welcome to",
+    "loginHint": "Use your username to sign in",
+    "username": "Username",
+    "password": "Password",
+    "thisFieldIsRequired": "This field is required!",
+    "invalidUsernameOrPassword": "Invalid user name or password",
+    "login": "Login"
+  }
+}
