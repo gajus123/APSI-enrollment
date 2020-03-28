@@ -1,0 +1,23 @@
+dist: trusty
+sudo: false
+
+jobs:
+  include:
+    - state: Angular tests
+      language: node_js
+      node_js:
+        - '13'
+      cache:
+        directories:
+          - ./node_modules
+      addons:
+        chrome: stable
+      before-install: cd apsi-enrollment-fe
+      install: npm install
+      script: npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+    - state: Spring tests
+      language: java
+      before-script: cd apsi-enrollment-be
+      script: gradle wrapper
+      script: chmod +x gradlew
+      script: ./gradlew build
