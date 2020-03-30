@@ -6,10 +6,8 @@ plugins {
 }
 
 group = 'edu.pw'
-version = '0.1'
-sourceCompatibility = '13'
-compileJava.options.fork = true
-compileJava.options.forkOptions.executable = '/usr/bin/javac'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -28,10 +26,15 @@ dependencies {
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation 'io.jsonwebtoken:jjwt:0.7.0'
 }
 
 test {

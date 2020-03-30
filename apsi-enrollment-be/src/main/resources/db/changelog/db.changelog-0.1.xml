@@ -8,8 +8,8 @@
 
     <changeSet id="1" author="gala377">
         <comment>Creates basic user entity</comment>
-        <createTable tableName="user">
-            <column name="id" type="int" autoIncrement="true">
+        <createTable tableName="user_">
+            <column name="id" type="int" autoIncrement="true" startWith="100">
                 <constraints nullable="false" primaryKey="true"  />
             </column>
             <column name="username" type="varchar(255)">
@@ -24,13 +24,33 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="password" type="blob">
+            <column name="password" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
         </createTable>
         <rollback>
             <dropTable tableName="user" />
         </rollback>
+
+    </changeSet>
+
+    <changeSet id="2" author="pszwed">
+        <loadData tableName="user_"
+                  file="db/changelog/data/user.csv"/>
+    </changeSet>
+
+    <changeSet id="3" author="pszwed">
+
+        <createTable tableName="USER_ROLES">
+            <column name="USER_ID" type="int"/>
+            <column name="ROLE_NAME" type="varchar2(255)"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="USER_ROLES" baseColumnNames="USER_ID" constraintName="USER_ROLES_FK1"
+                                 referencedTableName="USER_"
+                                 referencedColumnNames="ID"/>
+
+        <loadData tableName="USER_ROLES"
+                  file="db/changelog/data/user_roles.csv"/>
 
     </changeSet>
 </databaseChangeLog>
