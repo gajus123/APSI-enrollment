@@ -22,6 +22,7 @@ RUN ./gradlew build
 
 FROM openjdk:11-jre-slim
 COPY --from=build_be /usr/src/app/build /usr/src/app
+COPY --from=build_be /usr/src/app/build/libs/*.jar /usr/src/app/libs/apsi-enrollment.jar
 
 EXPOSE 8080
-CMD [ "java", "-jar", "/usr/src/app/libs/apsi-enrollment-be-0.0.1-SNAPSHOT.jar" ]
+CMD [ "java", "-jar", "/usr/src/app/libs/apsi-enrollment.jar" ]
