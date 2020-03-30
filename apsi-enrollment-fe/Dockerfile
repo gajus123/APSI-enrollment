@@ -9,6 +9,7 @@ RUN npm install -g @angular/cli
 COPY . .
 RUN ng build --prod
 
-WORKDIR /usr/src/app/apsi-enrollment-fe/dist/apsi-enrollment-fe
-EXPOSE 4200
-CMD [ "ng", "serve", "--host", "0.0.0.0" ]
+FROM httpd:alpine
+
+COPY --from=0 /usr/src/app/dist/apsi-enrollment-fe /usr/local/apache2/htdocs/
+EXPOSE 80

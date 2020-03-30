@@ -7,14 +7,9 @@ jobs:
       language: node_js
       node_js:
         - '13'
-      cache:
-        directories:
-          - ./node_modules
       addons:
         chrome: stable
-      before-install: cd apsi-enrollment-fe
-      install: npm install
-      script: npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+      script: make test-fe
     - state: Spring tests
       language: java
       before-script: cd apsi-enrollment-be
