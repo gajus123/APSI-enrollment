@@ -1,23 +1,21 @@
 package edu.pw.apsienrollment.user.api;
 
-import edu.pw.apsienrollment.user.UserService;
-import edu.pw.apsienrollment.authentication.api.dto.AuthTokenDto;
-import edu.pw.apsienrollment.authentication.api.dto.CredentialsDto;
 import edu.pw.apsienrollment.authentication.api.dto.AuthenticatedUserDto;
-import edu.pw.apsienrollment.user.db.User;
+import edu.pw.apsienrollment.user.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("user")
 @RequiredArgsConstructor
-@Slf4j
 public class UserController {
     private final UserService userService;
 

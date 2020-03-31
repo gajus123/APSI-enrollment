@@ -1,4 +1,4 @@
-package edu.pw.apsienrollment.common.api.model;
+package edu.pw.apsienrollment.common.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -9,6 +9,6 @@ public class TokenDto {
     @Builder.Default
     String tokenType = "Bearer";
 
-    String authToken;
+    String accessToken;
     String refreshToken;
 }

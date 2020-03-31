@@ -1,7 +1,7 @@
 package edu.pw.apsienrollment.common.api;
 
 import edu.pw.apsienrollment.authentication.exception.RefreshTokenExpiredException;
-import edu.pw.apsienrollment.common.api.model.ErrorDto;
+import edu.pw.apsienrollment.common.api.dto.ErrorDto;
 import edu.pw.apsienrollment.authentication.exception.InvalidCredentialsException;
 import edu.pw.apsienrollment.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
