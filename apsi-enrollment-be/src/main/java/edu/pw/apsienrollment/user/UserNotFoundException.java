@@ -1,7 +1,7 @@
-package edu.pw.apsienrollment.user.exception;
+package edu.pw.apsienrollment.user;
 
 public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException() {
+    UserNotFoundException() {
         super("User not found");
     }
 }

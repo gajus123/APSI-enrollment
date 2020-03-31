@@ -1,8 +1,9 @@
-package edu.pw.apsienrollment.base.config;
+package edu.pw.apsienrollment.common.api;
 
-import edu.pw.apsienrollment.base.api.model.ErrorDto;
-import edu.pw.apsienrollment.user.exception.InvalidCredentialsException;
-import edu.pw.apsienrollment.user.exception.UserNotFoundException;
+import edu.pw.apsienrollment.authentication.exception.RefreshTokenExpiredException;
+import edu.pw.apsienrollment.common.api.model.ErrorDto;
+import edu.pw.apsienrollment.authentication.exception.InvalidCredentialsException;
+import edu.pw.apsienrollment.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,7 +28,8 @@ public class DefaultExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({IllegalStateException.class, InvalidCredentialsException.class})
+    @ExceptionHandler({IllegalStateException.class, InvalidCredentialsException.class,
+            RefreshTokenExpiredException.class})
     @ResponseBody
     ErrorDto handleBadRequest(final HttpServletRequest req, final Exception ex) {
         return ErrorDto.builder()

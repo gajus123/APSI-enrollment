@@ -1,4 +1,4 @@
-package edu.pw.apsienrollment.user.api.dto;
+package edu.pw.apsienrollment.authentication.api.dto;
 
 import lombok.Value;
 

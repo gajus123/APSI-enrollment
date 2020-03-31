@@ -1,7 +1,7 @@
-package edu.pw.apsienrollment.base.config.security;
+package edu.pw.apsienrollment.authentication.security;
 
+import edu.pw.apsienrollment.authentication.JwtUtils;
 import edu.pw.apsienrollment.user.db.User;
-import io.jsonwebtoken.Jwts;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.Optional;
 
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
@@ -45,12 +46,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         try {
-            final String subject = Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(header.split(" ")[1])
-                    .getBody()
-                    .getSubject();
-
+            final String subject = JwtUtils.getSubject(header.split("")[1], secretKey);
             if (null != subject) {
                 User user = (User) userServiceImpl.loadUserByUsername(subject);
                 SecurityContextHolder.getContext()

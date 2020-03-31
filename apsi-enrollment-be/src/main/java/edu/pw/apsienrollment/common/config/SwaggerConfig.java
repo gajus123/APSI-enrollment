@@ -1,4 +1,4 @@
-package edu.pw.apsienrollment.base.config;
+package edu.pw.apsienrollment.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

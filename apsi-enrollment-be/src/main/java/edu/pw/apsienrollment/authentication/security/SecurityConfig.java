@@ -1,4 +1,4 @@
-package edu.pw.apsienrollment.base.config.security;
+package edu.pw.apsienrollment.authentication.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     };
 
     private static final String[] PUBLIC_POST_ANT_PATTERNS = {
-            "/user/login", "/user"
+            "/auth/authenticate", "/auth/refresh"
     };
 
     private final UserDetailsService userDetailsService;
@@ -37,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests().antMatchers("/h2/**").permitAll().and()
                 .authorizeRequests().antMatchers(SWAGGER_ANT_PATTERNS).permitAll().and()
+                .authorizeRequests().antMatchers(HttpMethod.GET, PUBLIC_POST_ANT_PATTERNS).permitAll().and()
                 .authorizeRequests().antMatchers(HttpMethod.POST, PUBLIC_POST_ANT_PATTERNS).permitAll().and()
                 .authorizeRequests().anyRequest().authenticated()
                 .and()

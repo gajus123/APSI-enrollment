@@ -1,4 +1,4 @@
-package edu.pw.apsienrollment.user.exception;
+package edu.pw.apsienrollment.authentication.exception;
 
 public class InvalidCredentialsException extends RuntimeException {
     public InvalidCredentialsException() {
