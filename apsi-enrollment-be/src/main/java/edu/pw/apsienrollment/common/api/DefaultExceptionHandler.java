@@ -1,6 +1,7 @@
 package edu.pw.apsienrollment.common.api;
 
-import edu.pw.apsienrollment.authentication.exception.RefreshTokenExpiredException;
+import edu.pw.apsienrollment.authentication.exception.RefreshTokenIsNotValidException;
+import edu.pw.apsienrollment.authentication.exception.RefreshTokenNotFoundException;
 import edu.pw.apsienrollment.common.api.dto.ErrorDto;
 import edu.pw.apsienrollment.authentication.exception.InvalidCredentialsException;
 import edu.pw.apsienrollment.user.UserNotFoundException;
@@ -17,7 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 public class DefaultExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({UserNotFoundException.class, UsernameNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, UsernameNotFoundException.class,
+            RefreshTokenNotFoundException.class})
     @ResponseBody
     ErrorDto handleResourceNotFound(final HttpServletRequest req, final Exception ex) {
         return ErrorDto.builder()
@@ -29,7 +31,7 @@ public class DefaultExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({IllegalStateException.class, InvalidCredentialsException.class,
-            RefreshTokenExpiredException.class})
+            RefreshTokenIsNotValidException.class})
     @ResponseBody
     ErrorDto handleBadRequest(final HttpServletRequest req, final Exception ex) {
         return ErrorDto.builder()

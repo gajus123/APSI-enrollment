@@ -53,4 +53,21 @@
                   file="db/changelog/data/user_roles.csv"/>
 
     </changeSet>
+
+    <changeSet id="4" author="pszwed">
+
+        <createTable tableName="REFRESH_TOKEN">
+            <column name="ID" type="bigint" autoIncrement="true" startWith="100">
+                <constraints nullable="false" primaryKey="true"  />
+            </column>
+            <column name="TOKEN" type="varchar2(64)"/>
+            <column name="VALID" type="boolean"/>
+            <column name="EXPIRES_AT" type="timestamp"/>
+            <column name="USER_ID" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="REFRESH_TOKEN" baseColumnNames="USER_ID" constraintName="REFRESH_TOKEN_FK1"
+                                 referencedTableName="USER_"
+                                 referencedColumnNames="ID"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -3,11 +3,15 @@ package edu.pw.apsienrollment.authentication;
 import edu.pw.apsienrollment.user.db.User;
 
 public interface AuthenticationService {
-    String authenticate(String username, String password);
+    User authenticate(String username, String password);
 
-    String authenticateFromRefreshToken(String refreshToken);
+    User authenticateFromRefreshToken(String refreshToken);
 
-    String getToken(String username, AuthTokenType tokenType);
+    void invalidateRefreshToken(String token);
+
+    String getAccessToken(User user);
+
+    String getRefreshToken(User user);
 
     User getAuthenticatedUser();
 }
