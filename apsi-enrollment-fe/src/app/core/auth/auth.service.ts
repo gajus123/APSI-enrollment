@@ -1,54 +1,34 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, NgZone, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject, throwError, timer } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
-import { TokenBundle, UserCredentials } from '../model/auth.model';
+import { TokenBundle } from '../model/auth.model';
+import { AuthAPIService } from './auth-api.service';
 
 const AUTH_TOKEN_BUNDLE_KEY = 'auth';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService implements OnDestroy {
-  private authBaseUrl: string;
-  private tokenSubject$: BehaviorSubject<TokenBundle>;
-  private subscriptions$: Subject<void>;
+export class AuthService {
+  private authTokenSubject$: BehaviorSubject<TokenBundle>;
 
   authToken$: Observable<string | null>;
   isAuthenticated$: Observable<boolean>;
 
-  constructor(private zone: NgZone, private http: HttpClient) {
-    this.authBaseUrl = environment.authBaseUrl;
-    this.tokenSubject$ = new BehaviorSubject<TokenBundle>(null);
-    this.subscriptions$ = new Subject<void>();
-    this.authToken$ = this.tokenSubject$.pipe(map((tokenBundle) => (tokenBundle ? tokenBundle.accessToken : null)));
-    this.isAuthenticated$ = this.tokenSubject$.pipe(map(Boolean));
+  constructor(private authAPI: AuthAPIService) {
+    this.authTokenSubject$ = new BehaviorSubject<TokenBundle>(null);
+
+    this.authToken$ = this.authTokenSubject$.pipe(map((tokenBundle) => (tokenBundle ? tokenBundle.accessToken : null)));
+    this.isAuthenticated$ = this.authTokenSubject$.pipe(map(Boolean));
 
     const storedToken = this.loadTokenBundle();
     if (storedToken != null) {
-      this.tokenSubject$.next(storedToken);
+      this.authTokenSubject$.next(storedToken);
     }
   }
 
-  ngOnDestroy() {
-    this.subscriptions$.next();
-    this.subscriptions$.complete();
-  }
-
   signIn(username: string, password: string): Observable<boolean> {
-    const credentials: UserCredentials = {
-      username,
-      password,
-    };
-
-    return this.http.post(`${this.authBaseUrl}/authenticate`, credentials).pipe(
-      map((response: TokenBundle) => {
-        if (response == null || response.accessToken == null || response.refreshToken == null) {
-          return null;
-        }
-        return response;
-      }),
+    return this.authAPI.signIn(username, password).pipe(
       catchError((err) => {
         this.setTokenBundle(null);
         return throwError(err);
@@ -63,20 +43,14 @@ export class AuthService implements OnDestroy {
   }
 
   refreshToken(): Observable<string> {
-    return this.http.post(`${this.authBaseUrl}/refresh`, { refreshToken: this.tokenSubject$.value.refreshToken }).pipe(
-      map((response: TokenBundle) => {
-        if (response == null || response.accessToken == null || response.refreshToken == null) {
-          return null;
-        }
-        return response;
-      }),
+    return this.authAPI.refresh(this.authTokenSubject$.value.refreshToken).pipe(
       tap((tokenBundle) => this.setTokenBundle(tokenBundle)),
       map((tokenBundle) => tokenBundle.accessToken)
     );
   }
 
   private setTokenBundle(bundle: TokenBundle) {
-    this.tokenSubject$.next(bundle);
+    this.authTokenSubject$.next(bundle);
     this.storeTokenBundle(bundle);
   }
 

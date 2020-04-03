@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -17,7 +17,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     console.log('interceptor url', req.url);
-    if (req.url.startsWith('assets') || req.url.startsWith(environment.authBaseUrl)) {
+    if (req.url.startsWith('assets') || req.url.startsWith(`${environment.authBaseUrl}`)) {
       return next.handle(req);
     }
 
