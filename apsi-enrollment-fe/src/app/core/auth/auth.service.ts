@@ -1,23 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subject, throwError, timer } from 'rxjs';
-import { catchError, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-
-interface AuthTokenBundle {
-  authToken: string;
-  refreshToken: string;
-}
+import { TokenBundle, UserCredentials } from '../model/auth.model';
 
 const AUTH_TOKEN_BUNDLE_KEY = 'auth';
-const TOKEN_REFRESH_RATE = 10000;
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService implements OnDestroy {
   private authBaseUrl: string;
-  private tokenSubject$: BehaviorSubject<AuthTokenBundle>;
+  private tokenSubject$: BehaviorSubject<TokenBundle>;
   private subscriptions$: Subject<void>;
 
   authToken$: Observable<string | null>;
@@ -25,18 +20,10 @@ export class AuthService implements OnDestroy {
 
   constructor(private zone: NgZone, private http: HttpClient) {
     this.authBaseUrl = environment.authBaseUrl;
-    this.tokenSubject$ = new BehaviorSubject<AuthTokenBundle>(null);
+    this.tokenSubject$ = new BehaviorSubject<TokenBundle>(null);
     this.subscriptions$ = new Subject<void>();
-    this.authToken$ = this.tokenSubject$.pipe(map((tokenBundle) => (tokenBundle ? tokenBundle.authToken : null)));
+    this.authToken$ = this.tokenSubject$.pipe(map((tokenBundle) => (tokenBundle ? tokenBundle.accessToken : null)));
     this.isAuthenticated$ = this.tokenSubject$.pipe(map(Boolean));
-
-    this.tokenSubject$
-      .pipe(
-        switchMap((tokenBundle) => timer(TOKEN_REFRESH_RATE)),
-        switchMap(() => this.refreshToken()),
-        takeUntil(this.subscriptions$)
-      )
-      .subscribe();
 
     const storedToken = this.loadTokenBundle();
     if (storedToken != null) {
@@ -50,9 +37,14 @@ export class AuthService implements OnDestroy {
   }
 
   signIn(username: string, password: string): Observable<boolean> {
-    return this.http.post(`${this.authBaseUrl}/authenticate`, { username, password }).pipe(
-      map((response: AuthTokenBundle) => {
-        if (response == null || response.authToken == null || response.refreshToken == null) {
+    const credentials: UserCredentials = {
+      username,
+      password,
+    };
+
+    return this.http.post(`${this.authBaseUrl}/authenticate`, credentials).pipe(
+      map((response: TokenBundle) => {
+        if (response == null || response.accessToken == null || response.refreshToken == null) {
           return null;
         }
         return response;
@@ -61,7 +53,7 @@ export class AuthService implements OnDestroy {
         this.setTokenBundle(null);
         return throwError(err);
       }),
-      tap((tokenBundle: AuthTokenBundle) => this.setTokenBundle(tokenBundle)),
+      tap((tokenBundle: TokenBundle) => this.setTokenBundle(tokenBundle)),
       map(() => true)
     );
   }
@@ -72,23 +64,23 @@ export class AuthService implements OnDestroy {
 
   refreshToken(): Observable<string> {
     return this.http.post(`${this.authBaseUrl}/refresh`, { refreshToken: this.tokenSubject$.value.refreshToken }).pipe(
-      map((response: AuthTokenBundle) => {
-        if (response == null || response.authToken == null || response.refreshToken == null) {
+      map((response: TokenBundle) => {
+        if (response == null || response.accessToken == null || response.refreshToken == null) {
           return null;
         }
         return response;
       }),
       tap((tokenBundle) => this.setTokenBundle(tokenBundle)),
-      map((tokenBundle) => tokenBundle.authToken)
+      map((tokenBundle) => tokenBundle.accessToken)
     );
   }
 
-  private setTokenBundle(bundle: AuthTokenBundle) {
+  private setTokenBundle(bundle: TokenBundle) {
     this.tokenSubject$.next(bundle);
     this.storeTokenBundle(bundle);
   }
 
-  private storeTokenBundle(bundle: AuthTokenBundle) {
+  private storeTokenBundle(bundle: TokenBundle) {
     if (bundle != null) {
       const serializedBundle = JSON.stringify(bundle);
       window.localStorage.setItem(AUTH_TOKEN_BUNDLE_KEY, serializedBundle);
@@ -97,7 +89,7 @@ export class AuthService implements OnDestroy {
     }
   }
 
-  private loadTokenBundle(): AuthTokenBundle | null {
+  private loadTokenBundle(): TokenBundle | null {
     const serializedBundle = window.localStorage.getItem(AUTH_TOKEN_BUNDLE_KEY);
     if (serializedBundle == null) {
       return null;
