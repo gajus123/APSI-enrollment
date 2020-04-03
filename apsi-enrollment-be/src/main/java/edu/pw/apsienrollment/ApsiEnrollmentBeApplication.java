@@ -9,7 +9,4 @@ public class ApsiEnrollmentBeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ApsiEnrollmentBeApplication.class, args);
 	}
-
-
-
 }
