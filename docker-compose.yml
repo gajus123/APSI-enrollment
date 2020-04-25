@@ -1,0 +1,12 @@
+version: '2.0'
+services:
+  web:
+    build: apsi-enrollment-fe/.
+    ports:
+      - "80:80"
+    depends_on:
+      - rest
+  rest:
+    build: apsi-enrollment-be/.
+    ports:
+      - "8080:8080"
