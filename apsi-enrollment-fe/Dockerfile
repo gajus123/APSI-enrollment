@@ -9,7 +9,7 @@ RUN npm install -g @angular/cli
 COPY . .
 RUN ng build --prod
 
-FROM httpd:alpine
+FROM nginx
 
-COPY --from=0 /usr/src/app/dist/apsi-enrollment-fe /usr/local/apache2/htdocs/
+COPY --from=0 /usr/src/app/dist/apsi-enrollment-fe /usr/share/nginx/html
 EXPOSE 80
